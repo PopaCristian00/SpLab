@@ -1,37 +1,64 @@
-
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 
-public class Book {
-    private String bookName;
-    private List<Author> AuthorList = new ArrayList<>();
-    private ArrayList<Element> content= new ArrayList<>();
+public class Book extends Section implements Visitee {
+    String title;
+    List<Author> authorList = new LinkedList<>();
+    List<Element> elementList = new LinkedList<>();
 
-    public Book(String bookName)
-    {
-        this.bookName = bookName;
+    public Book(String title) {
+        super(title);
+        this.title = title;
     }
 
-    public void addContent(Element element)
-    {
-        this.content.add(element);
+    public void addContent(Element el) {
+        this.elementList.add(el);
     }
 
-    public void addAuthor(Author author)
-    {
-        this.AuthorList.add(author);
+    public void addAuthor(Author author) {
+        this.authorList.add(author);
     }
 
+    @Override
+    public void print() {
+        System.out.println("Book: " + this.title + "\n");
 
-    public void print()
-    {
-        System.out.println("Book: " + this.bookName);
-        System.out.println("Authors: ");
-        for(Author a : AuthorList)
-            a.print();
-        for(Element e:content)
-            e.print();
+        System.out.println("Authors:");
+        for (Author aut : authorList) {
+            aut.print();
+        }
+
+        System.out.println();
+
+        for (Element el : elementList) {
+            el.print();
+        }
     }
 
+    public void render() {
+        System.out.println("Book: " + this.title + "\n");
 
+        System.out.println("Authors:");
+        for (Author aut : authorList) {
+            aut.print();
+        }
+
+        System.out.println();
+
+        for (Element el : elementList) {
+            el.print();
+        }
+    }
+
+    public List<Author> getAuthor() {
+        return this.authorList;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+        for (Element el : elementList) {
+            el.accept(visitor);
+        }
+    }
 }

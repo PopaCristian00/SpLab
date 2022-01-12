@@ -1,60 +1,52 @@
+import java.util.LinkedList;
+import java.util.List;
 
-import java.util.ArrayList;
-public class Section implements Element{
-    private String name;
-    private ArrayList<Element> elements=new ArrayList<>();
-    public Section(String name)
-    {
-        this.name = name;
+public class Section extends Element implements Visitee{
+    String title;
+    List<Element> elementList = new LinkedList<>();
+
+    public Section(String title) {
+        this.title = title;
     }
 
-    public Section (Section section)
-    {
-        name = section.name;
-    }
-
-    public void print()
-    {
-        System.out.println(name);
-        for(Element e:elements)
-            e.print();
-    }
-
-    public void add(Element element)
-    {
-        /*
-        if(element instanceof Paragraph){
-            Paragraph paragraphCopy = new Paragraph((Paragraph) element);
-            this.elements.add(paragraphCopy);
+    @Override
+    public void add(Element el) {
+        if (el.parent == null) {
+            this.elementList.add(el);
+            el.parent = this;
         }
-        else if(element instanceof Image){
-            Image imageCopy = new Image((Image) element);
-            this.elements.add(imageCopy);
-        }
-        else if(element instanceof Section){
-            Section sectionCopy = new Section((Section) element);
-            this.elements.add(sectionCopy);
-        }
-        else if(element instanceof Table){
-            Table tableCopy = new Table((Table) element);
-            this.elements.add(tableCopy);
-        }
-*/
-        this.elements.add(element);
     }
 
-    public void remove(Element element)
-    {
-        this.elements.remove(element);
+    @Override
+    public void remove(Element el) {
+        this.elementList.remove(el);
     }
 
-    public Element get(int index) {
-        if(index < 0 || index >=elements.size())
-        {
-            return null;
+    @Override
+    public Element get(int num) {
+        return this.elementList.get(num);
+    }
+
+    @Override
+    public void print() {
+        System.out.println(this.title);
+        for (Element el:elementList) {
+            el.print();
         }
-        return elements.get(index);
     }
 
+    public void render() {
+        System.out.println(this.title);
+        for (Element el:elementList) {
+            el.print();
+        }
+    }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+        for (Element el:elementList) {
+            el.accept(visitor);
+        }
+    }
 }
